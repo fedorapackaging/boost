@@ -28,7 +28,7 @@ Name: boost
 Summary: The free peer-reviewed portable C++ source libraries
 Version: 1.47.0
 %define version_enc 1_47_0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Boost
 
 # The CMake build framework (set of CMakeLists.txt and module.cmake files) is
@@ -98,6 +98,9 @@ Patch3: boost-1.47.0-exceptions.patch
 # https://svn.boost.org/trac/boost/ticket/5934
 Patch4: boost-1.47.0-tuple.patch
 
+# https://bugzilla.redhat.com/show_bug.cgi?id=771370
+Patch5: boost-1.47.0-mathlib.patch
+
 %bcond_with tests
 %bcond_with docs_generated
 
@@ -157,15 +160,13 @@ Run-Time support for Boost.IOStreams, a framework for defining streams,
 stream buffers and i/o filters.
 
 %package math
-Summary: Stub that used to contain boost math library
+Summary: Math functions for boost TR1 library
 Group: System Environment/Libraries
 
 %description math
 
-This package is a stub that used to contain run-time component of boost
-math library.  Now that boost math library is header-only, this
-package is empty.  It's kept around only so that during yum-assisted
-update, old libraries from boost-math package aren't left around.
+Run-Time support for C99 and C++ TR1 C-style Functions from math
+portion of Boost.TR1.
 
 %package program-options
 Summary:  Run-Time component of boost program_options library
@@ -443,6 +444,7 @@ sed 's/_FEDORA_SONAME/%{sonamever}/' %{PATCH1} | %{__patch} -p0 --fuzz=0
 %patch2 -p1
 %patch3 -p0
 %patch4 -p2
+%patch5 -p1
 
 %build
 # Support for building tests.
@@ -752,6 +754,7 @@ find $RPM_BUILD_ROOT%{_includedir}/ \( -name '*.pl' -o -name '*.sh' \) -exec %{_
 %files math
 %defattr(-, root, root, -)
 %doc LICENSE_1_0.txt
+%{_libdir}/libboost_math*.so.%{sonamever}
 
 %files test
 %defattr(-, root, root, -)
@@ -895,6 +898,10 @@ find $RPM_BUILD_ROOT%{_includedir}/ \( -name '*.pl' -o -name '*.sh' \) -exec %{_
 %{_bindir}/bjam
 
 %changelog
+* Wed Jan  4 2012 Petr Machata <pmachata@redhat.com> - 1.47.0-5
+- Build math portion of Boost.TR1, package DSOs in boost-math.
+- Resolves: #771370
+
 * Thu Nov  3 2011 Petr Machata <pmachata@redhat.com> - 1.47.0-4
 - Use <boost/tr1/tuple> instead of C++11 header <tuple> in boost math.
 - Resolves: #751210
