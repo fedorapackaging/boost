@@ -28,7 +28,7 @@ Name: boost
 Summary: The free peer-reviewed portable C++ source libraries
 Version: 1.47.0
 %define version_enc 1_47_0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Boost
 
 # The CMake build framework (set of CMakeLists.txt and module.cmake files) is
@@ -97,6 +97,10 @@ Patch3: boost-1.47.0-exceptions.patch
 
 # https://svn.boost.org/trac/boost/ticket/5934
 Patch4: boost-1.47.0-tuple.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=828856
+# https://bugzilla.redhat.com/show_bug.cgi?id=828857
+Patch5: boost-1.47.0-pool.patch
 
 %bcond_with tests
 %bcond_with docs_generated
@@ -441,6 +445,7 @@ sed 's/_FEDORA_SONAME/%{sonamever}/' %{PATCH1} | %{__patch} -p0 --fuzz=0
 %patch2 -p1
 %patch3 -p0
 %patch4 -p2
+%patch5 -p1
 
 %build
 # Support for building tests.
@@ -894,6 +899,10 @@ find $RPM_BUILD_ROOT%{_includedir}/ \( -name '*.pl' -o -name '*.sh' \) -exec %{_
 %{_bindir}/bjam
 
 %changelog
+* Wed Jun  6 2012 Petr Machata <pmachata@redhat.com> - 1.47.0-7
+- In Boost.Pool, be careful not to overflow allocated chunk size.
+- Resolves: #828857
+
 * Wed Jan  4 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> - 1.47.0-6
 - Integrated into "upstream" (CMake-ified Boost) the Boost.TR1/Math patch.
 
