@@ -750,30 +750,28 @@ index 0000000..b14dc54
 \ No newline at end of file
 diff --git a/libs/algorithm/CMakeLists.txt b/libs/algorithm/CMakeLists.txt
 new file mode 100644
-index 0000000..0f8d88c
+index 0000000..5cb46ba
 --- /dev/null
 +++ b/libs/algorithm/CMakeLists.txt
-@@ -0,0 +1,22 @@
-+#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
+@@ -0,0 +1,20 @@
 +#----------------------------------------------------------------------------
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
++# Add a variable to hold the headers for the library
++set (lib_headers
++    algorithm
++)
 +
 +# Add a library target to the build system
-+boost_library_project(
-+  algorithm
-+  #  SRCDIRS 
-+  TESTDIRS  minmax/test string/test
-+  # EXAMPLEDIRS minmax/example string/example
-+  HEADERS algorithm
-+  #  DOCDIRS 
-+  DESCRIPTION  "A library of various algorithms."
++boost_library_project (algorithm
++  #  SRCDIRS
++  TESTDIRS minmax/test string/test test
++  EXAMPLEDIRS minmax/example string/example example
++  HEADERS ${lib_headers}
++  DOCDIRS doc 
++  DESCRIPTION  "A collection of general purpose algorithms."
 +  MODULARIZED
-+  AUTHORS  "Pavol Droba <droba -at- topmail.sk>"
-+           "Herve Bronnimann <hbr -at- poly.edu>"
++  AUTHORS  "Marshall Clow <mclow.lists -at- gmail.com>"
 +  #  MAINTAINERS 
 +)
 diff --git a/libs/algorithm/minmax/test/CMakeLists.txt b/libs/algorithm/minmax/test/CMakeLists.txt
@@ -794,12 +792,11 @@ index 0000000..e70ce47
 +boost_test_run(minmax_test)
 diff --git a/libs/algorithm/module.cmake b/libs/algorithm/module.cmake
 new file mode 100644
-index 0000000..deb4bb2
+index 0000000..083fc78
 --- /dev/null
 +++ b/libs/algorithm/module.cmake
-@@ -0,0 +1,4 @@
-+boost_module(algorithm DEPENDS regex concept_check range)
-+
+@@ -0,0 +1,3 @@
++boost_module(algorithm DEPENDS range array type_traits static_assert utility)
 +
 +
 diff --git a/libs/algorithm/string/test/CMakeLists.txt b/libs/algorithm/string/test/CMakeLists.txt
@@ -3396,51 +3393,29 @@ index 0000000..98e8869
 +
 diff --git a/libs/filesystem/CMakeLists.txt b/libs/filesystem/CMakeLists.txt
 new file mode 100644
-index 0000000..4d4138d
+index 0000000..01f2a5c
 --- /dev/null
 +++ b/libs/filesystem/CMakeLists.txt
-@@ -0,0 +1,42 @@
-+#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
+@@ -0,0 +1,20 @@
 +#----------------------------------------------------------------------------
-+# This file was automatically generated from the original CMakeLists.txt file
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
 +# Add a variable to hold the headers for the library
 +set (lib_headers
-+    filesystem.hpp
-+    filesystem
-+	)
++  filesystem.hpp
++  filesystem
++)
 +
 +# Add a library target to the build system
-+boost_library_project(
-+  filesystem
-+  # SRCDIRS  v3/src
-+  TESTDIRS  test
++boost_library_project (filesystem
++  SRCDIRS src
++  TESTDIRS test
 +  HEADERS ${lib_headers}
-+  #  DOCDIRS 
-+  DESCRIPTION  "Provides portable facilities to query and manipulate paths, files, and directories. Note: the default version is now v3: v2 is deprecated."
++  DOCDIRS doc
++  DESCRIPTION  "Provides portable facilities to query and manipulate paths, files, and directories. Note: the default version is now v3: v2 is no longer distributed."
 +  MODULARIZED
 +  AUTHORS  "Beman Dawes <bdawes -at- acm.org>"
 +  #  MAINTAINERS 
-+  )
-+
-+boost_add_library(
-+  filesystem
-+
-+  v2/src/v2_operations.cpp v2/src/v2_path.cpp
-+  v2/src/v2_portability.cpp
-+
-+  v3/src/codecvt_error_category.cpp v3/src/operations.cpp
-+  v3/src/path.cpp v3/src/path_traits.cpp v3/src/portability.cpp
-+  v3/src/unique_path.cpp v3/src/utf8_codecvt_facet.cpp
-+  v3/src/windows_file_codecvt.cpp
-+
-+  SHARED_COMPILE_FLAGS "-DBOOST_FILESYSTEM_DYN_LINK=1"
-+  STATIC_COMPILE_FLAGS "-DBOOST_FILESYSTEM_STATIC_LINK=1"
-+  DEPENDS boost_system
 +  )
 diff --git a/libs/filesystem/module.cmake b/libs/filesystem/module.cmake
 new file mode 100644
@@ -3450,54 +3425,71 @@ index 0000000..6cf6911
 @@ -0,0 +1 @@
 +boost_module(filesystem DEPENDS system smart_ptr)
 \ No newline at end of file
-diff --git a/libs/filesystem/test/CMakeLists.txt b/libs/filesystem/test/CMakeLists.txt
+diff --git a/libs/filesystem/src/CMakeLists.txt b/libs/filesystem/src/CMakeLists.txt
 new file mode 100644
-index 0000000..ac9c951
+index 0000000..fa672b7
 --- /dev/null
-+++ b/libs/filesystem/test/CMakeLists.txt
-@@ -0,0 +1,22 @@
++++ b/libs/filesystem/src/CMakeLists.txt
+@@ -0,0 +1,13 @@
++#----------------------------------------------------------------------------
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
 +#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
-+boost_additional_test_dependencies(filesystem BOOST_DEPENDS test bind)
-+
-+ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB) # -DBOOST_FILESYSTEM_STATIC_LINK
-+
-+boost_test_compile(mbcopy ../v3/example/mbcopy.cpp)
-+boost_test_compile(mbpath ../v3/example/mbpath.cpp)
-+boost_test_compile(tchar ../v3/example/tchar.cpp)
-+boost_test_compile(file_size ../v3/example/file_size.cpp)
-+boost_test_compile(path_info ../v3/example/path_info.cpp)
-+boost_test_compile(error_demo ../v3/example/error_demo.cpp)
-+boost_test_compile(tut0 ../v3/example/tut0.cpp)
-+boost_test_compile(tut1 ../v3/example/tut1.cpp)
-+boost_test_compile(tut2 ../v3/example/tut2.cpp)
-+boost_test_compile(tut3 ../v3/example/tut3.cpp)
-+boost_test_compile(tut4 ../v3/example/tut4.cpp)
-+boost_test_compile(tut5 ../v3/example/tut5.cpp)
-diff --git a/libs/filesystem/v2/src/CMakeLists.txt b/libs/filesystem/v2/src/CMakeLists.txt
-new file mode 100644
-index 0000000..c11ee66
---- /dev/null
-+++ b/libs/filesystem/v2/src/CMakeLists.txt
-@@ -0,0 +1,14 @@
-+#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
-+boost_add_library(
-+  filesystem
-+  v2_operations.cpp v2_path.cpp v2_portability.cpp
++boost_add_library (filesystem
++  codecvt_error_category.cpp operations.cpp path.cpp path_traits.cpp
++  portability.cpp unique_path.cpp utf8_codecvt_facet.cpp
++  windows_file_codecvt.cpp
 +  SHARED_COMPILE_FLAGS "-DBOOST_FILESYSTEM_DYN_LINK=1"
 +  STATIC_COMPILE_FLAGS "-DBOOST_FILESYSTEM_STATIC_LINK=1"
 +  DEPENDS boost_system
-+  )
++)
 +
+diff --git a/libs/filesystem/test/CMakeLists.txt b/libs/filesystem/test/CMakeLists.txt
+new file mode 100644
+index 0000000..428d539
+--- /dev/null
++++ b/libs/filesystem/test/CMakeLists.txt
+@@ -0,0 +1,40 @@
++#----------------------------------------------------------------------------
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
++#
++boost_additional_test_dependencies (filesystem BOOST_DEPENDS test bind)
++
++#
++ADD_DEFINITIONS (-DBOOST_ALL_NO_LIB) # -DBOOST_FILESYSTEM_STATIC_LINK
++
++#
++boost_test_compile(mbcopy ../example/mbcopy.cpp)
++boost_test_compile(mbpath ../example/mbpath.cpp)
++boost_test_compile(tchar ../example/tchar.cpp)
++boost_test_compile(file_size ../example/file_size.cpp)
++boost_test_compile(path_info ../example/path_info.cpp)
++boost_test_compile(error_demo ../example/error_demo.cpp)
++boost_test_compile(tut0 ../example/tut0.cpp)
++boost_test_compile(tut1 ../example/tut1.cpp)
++boost_test_compile(tut2 ../example/tut2.cpp)
++boost_test_compile(tut3 ../example/tut3.cpp)
++boost_test_compile(tut4 ../example/tut4.cpp)
++boost_test_compile(tut5 ../example/tut5.cpp)
++
++#
++SET (TESTS path_unit_test path_test
++  operations_unit_test operations_test 
++  fstream_test convenience_test 
++  large_file_support_test deprecated_test
++  simple_ls)
++
++FOREACH (test ${TESTS})
++  boost_test_run(${test}_static
++    ${test}.cpp
++    DEPENDS boost_filesystem STATIC
++    COMPILE_FLAGS -DBOOST_FILESYSTEM_STATIC_LINK)
++  boost_test_run(${test}_dynamic
++    ${test}.cpp
++    DEPENDS boost_filesystem SHARED
++    COMPILE_FLAGS -DBOOST_FILESYSTEM_DYN_LINK)
++ENDFOREACH (test ${TESTS})
 diff --git a/libs/filesystem/v2/test/CMakeLists.txt b/libs/filesystem/v2/test/CMakeLists.txt
 new file mode 100644
 index 0000000..7ce5102
@@ -4015,18 +4007,13 @@ index 0000000..1a5a0c3
 +boost_test_compile(macro_type_args_example ../example/macro_type_args_example.cpp)
 diff --git a/libs/functional/CMakeLists.txt b/libs/functional/CMakeLists.txt
 new file mode 100644
-index 0000000..6a28765
+index 0000000..3608d8c
 --- /dev/null
 +++ b/libs/functional/CMakeLists.txt
-@@ -0,0 +1,28 @@
-+#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
+@@ -0,0 +1,23 @@
 +#----------------------------------------------------------------------------
-+# This file was automatically generated from the original CMakeLists.txt file
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
 +# Add a variable to hold the headers for the library
 +set (lib_headers
 +    functional.hpp
@@ -4034,15 +4021,15 @@ index 0000000..6a28765
 +)
 +
 +# Add a library target to the build system
-+boost_library_project(
-+  functional
++boost_library_project (functional
 +  #  SRCDIRS 
-+  TESTDIRS  test hash/test hash/examples
++  TESTDIRS test hash/test
++  EXAMPLEDIRS hash/examples
 +  HEADERS ${lib_headers}
-+  DOCDIRS  hash/doc
-+  #  DESCRIPTION 
++  DOCDIRS  factory/doc forward/doc hash/doc overloaded_function/doc
++  DESCRIPTION "Various functional-related components: Factory, Forward Adapter, Hash and Overloaded Function"
 +  MODULARIZED 
-+  #  AUTHORS 
++  AUTHORS  "Lorenzo Caminiti <lorcaminiti - at - gmail.com> for Overloaded Function"
 +  #  MAINTAINERS 
 +)
 +
@@ -4842,6 +4829,41 @@ index 0000000..e149b47
 +  endif(NOT MSVC)
 +
 +endif(MPI_FOUND)
+diff --git a/libs/heap/CMakeLists.txt b/libs/heap/CMakeLists.txt
+new file mode 100644
+index 0000000..41d0fba
+--- /dev/null
++++ b/libs/heap/CMakeLists.txt
+@@ -0,0 +1,21 @@
++#----------------------------------------------------------------------------
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
++# Add a variable to hold the headers for the library
++set (lib_headers
++    heap
++)
++
++# Add a library target to the build system
++boost_library_project (heap
++  TESTDIRS test
++  EXAMPLEDIRS examples
++  HEADERS ${lib_headers}
++  DOCDIRS doc
++  DESCRIPTION  "An implementation of priority queues."
++  MODULARIZED
++  AUTHORS  "Tim Blechmann <tim - at - klingt.org>"
++  #  MAINTAINERS 
++)
++
++
+diff --git a/libs/heap/module.cmake b/libs/heap/module.cmake
+new file mode 100644
+index 0000000..07f4053
+--- /dev/null
++++ b/libs/heap/module.cmake
+@@ -0,0 +1 @@
++boost_module (container)
+\ No newline at end of file
 diff --git a/libs/icl/CMakeLists.txt b/libs/icl/CMakeLists.txt
 new file mode 100644
 index 0000000..a07079b
@@ -5491,6 +5513,43 @@ index 0000000..4f9a74f
 +boost_test_run(operator_tests_simple DEPENDS boost_test_exec_monitor)
 +boost_test_run(phoenix_control_structures DEPENDS boost_test_exec_monitor)
 +boost_test_run(switch_construct DEPENDS boost_test_exec_monitor)
+diff --git a/libs/local_function/CMakeLists.txt b/libs/local_function/CMakeLists.txt
+new file mode 100644
+index 0000000..e1dbd26
+--- /dev/null
++++ b/libs/local_function/CMakeLists.txt
+@@ -0,0 +1,23 @@
++#----------------------------------------------------------------------------
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
++# Add a variable to hold the headers for the library
++set (lib_headers
++    local_function.hpp
++    local_function
++)
++
++# Add a library target to the build system
++boost_library_project (local_function
++  #  SRCDIRS 
++  TESTDIRS test
++  EXAMPLEDIRS example
++  HEADERS ${lib_headers}
++  DOCDIRS  doc
++  DESCRIPTION "Various functional-related components: Factory, Forward Adapter, Hash and Overloaded Function"
++  MODULARIZED 
++  AUTHORS  "Lorenzo Caminiti <lorcaminiti - at - gmail.com> for Overloaded Function"
++  #  MAINTAINERS 
++)
++
++
+diff --git a/libs/local_function/module.cmake b/libs/local_function/module.cmake
+new file mode 100644
+index 0000000..f10d82e
+--- /dev/null
++++ b/libs/local_function/module.cmake
+@@ -0,0 +1 @@
++boost_module(functional DEPENDS integer)
+\ No newline at end of file
 diff --git a/libs/locale/CMakeLists.txt b/libs/locale/CMakeLists.txt
 new file mode 100644
 index 0000000..668d0cc
@@ -5530,10 +5589,10 @@ index 0000000..16740be
 +boost_module (locale DEPENDS thread)
 diff --git a/libs/locale/src/CMakeLists.txt b/libs/locale/src/CMakeLists.txt
 new file mode 100644
-index 0000000..7732199
+index 0000000..5875f7e
 --- /dev/null
 +++ b/libs/locale/src/CMakeLists.txt
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,68 @@
 +#----------------------------------------------------------------------------
 +# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
 +#----------------------------------------------------------------------------
@@ -5545,7 +5604,11 @@ index 0000000..7732199
 +  include_directories (${ICU_INCLUDE_DIRS})
 +  set (BOOST_LOCALE_ICU_LIBRARIES ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES})
 +  colormsg (GREEN "+-- ICU (unicode) available for locale, enabling support.")
-+  set (NO_STATIC_IF_ICU_FOUND "NO_STATIC")
++  set (NO_STATIC_IF_ICU_FOUND NO_STATIC NO_SINGLE_THREADED)
++  set (ICU_SOURCES icu/boundary.cpp icu/codecvt.cpp icu/collator.cpp
++       icu/conversion.cpp icu/date_time.cpp icu/formatter.cpp
++       icu/icu_backend.cpp icu/numeric.cpp icu/time_zone.cpp )
++  set (ICU_DEPENDS boost_thread)
 +else (ICU_FOUND AND ICU_I18N_FOUND)
 +  colormsg (CYAN "+-- ICU (unicode) not available for locale, disabling support.")
 +endif (ICU_FOUND AND ICU_I18N_FOUND)
@@ -5553,8 +5616,9 @@ index 0000000..7732199
 +if (WIN32)
 +  add_definitions (-DBOOST_LOCALE_NO_POSIX_BACKEND=1)
 +  set (WIN32_SOURCES win32/collate.cpp win32/converter.cpp win32/lcid.cpp
-+       win32/numeric.cpp win32/win_backend.cpp std/codecvt.cpp std/collate.cpp
-+       std/converter.cpp std/numeric.cpp std/std_backend.cpp util/gregorian.cpp)
++       win32/numeric.cpp win32/win_backend.cpp )
++else (WIN32)
++  add_definitions (-DBOOST_LOCALE_NO_WINAPI_BACKEND=1)
 +endif (WIN32)
 +
 +add_definitions (-DBOOST_THREAD_NO_LIB=1)
@@ -5569,12 +5633,29 @@ index 0000000..7732199
 +  shared/localization_backend.cpp
 +  shared/message.cpp
 +  shared/mo_lambda.cpp
-+  ${WIN32_SOURCES}
++
 +  util/codecvt_converter.cpp
 +  util/default_locale.cpp
 +  util/info.cpp
-+  util/locale_data.cpp  
++  util/locale_data.cpp
++  util/gregorian.cpp
 +
++  std/codecvt.cpp
++  std/collate.cpp
++  std/converter.cpp
++  std/numeric.cpp
++  std/std_backend.cpp
++
++  posix/codecvt.cpp
++  posix/collate.cpp
++  posix/converter.cpp
++  posix/numeric.cpp
++  posix/posix_backend.cpp
++
++  ${WIN32_SOURCES}
++  ${ICU_SOURCES}
++
++  DEPENDS ${ICU_DEPENDS}
 +  LINK_LIBS ${BOOST_LOCALE_ICU_LIBRARIES}
 +  SHARED_COMPILE_FLAGS -DBOOST_LOCALE_DYN_LINK=1
 +  ${NO_STATIC_IF_ICU_FOUND}
@@ -7370,7 +7451,7 @@ index 0000000..cf44a1e
 +boost_module(program_options DEPENDS any bind smart_ptr test tokenizer)
 diff --git a/libs/program_options/src/CMakeLists.txt b/libs/program_options/src/CMakeLists.txt
 new file mode 100644
-index 0000000..9a20ec2
+index 0000000..b274431
 --- /dev/null
 +++ b/libs/program_options/src/CMakeLists.txt
 @@ -0,0 +1,11 @@
@@ -7382,7 +7463,7 @@ index 0000000..9a20ec2
 +#
 +boost_add_library(program_options
 +  cmdline.cpp config_file.cpp options_description.cpp parsers.cpp 
-+  variables_map.cpp value_semantic.cpp positional_options.cpp 
++  split.cpp variables_map.cpp value_semantic.cpp positional_options.cpp 
 +  utf8_codecvt_facet.cpp convert.cpp winmain.cpp
 +  SHARED_COMPILE_FLAGS "-DBOOST_PROGRAM_OPTIONS_DYN_LINK=1")
 diff --git a/libs/program_options/test/CMakeLists.txt b/libs/program_options/test/CMakeLists.txt
@@ -7778,10 +7859,10 @@ index 0000000..5bfa0c7
 \ No newline at end of file
 diff --git a/libs/python/src/CMakeLists.txt b/libs/python/src/CMakeLists.txt
 new file mode 100644
-index 0000000..e4326a4
+index 0000000..3096c91
 --- /dev/null
 +++ b/libs/python/src/CMakeLists.txt
-@@ -0,0 +1,70 @@
+@@ -0,0 +1,71 @@
 +#
 +# Copyright Troy D. Straszheim
 +#
@@ -7813,7 +7894,8 @@ index 0000000..e4326a4
 +# Always build the non-debug variants of the boost_python library
 +set(BUILD_PYTHON_NODEBUG ON)
 +
-+boost_add_library(python
++colormsg (GREEN "+-- BOOST_PYTHON_SUFFIX=${BOOST_PYTHON_SUFFIX}")
++boost_add_library(python${BOOST_PYTHON_SUFFIX}
 +  numeric.cpp 
 +  list.cpp 
 +  long.cpp 
@@ -11115,18 +11197,13 @@ index 0000000..68d92be
 +
 diff --git a/libs/utility/CMakeLists.txt b/libs/utility/CMakeLists.txt
 new file mode 100644
-index 0000000..f6285c4
+index 0000000..a3f2c98
 --- /dev/null
 +++ b/libs/utility/CMakeLists.txt
-@@ -0,0 +1,37 @@
-+#
-+# Copyright Troy D. Straszheim
-+#
-+# Distributed under the Boost Software License, Version 1.0.
-+# See http://www.boost.org/LICENSE_1_0.txt
-+#
+@@ -0,0 +1,29 @@
 +#----------------------------------------------------------------------------
-+# This file was automatically generated from the original CMakeLists.txt file
++# CMake framework maintained by Denis Arnaud on git://github.com/pocb/boost
++#----------------------------------------------------------------------------
 +# Add a variable to hold the headers for the library
 +set (lib_headers
 +    assert.hpp
@@ -11141,21 +11218,18 @@ index 0000000..f6285c4
 +)
 +
 +# Add a library target to the build system
-+boost_library_project(
-+  utility
++boost_library_project (utility
 +  #  SRCDIRS 
-+  TESTDIRS  test swap/test enable_if/test
++  TESTDIRS test enable_if/test identity_type/test swap/test
 +  HEADERS ${lib_headers}
-+  #  DOCDIRS 
++  DOCDIRS doc identity_type/doc
 +  DESCRIPTION  "Various small utilities for C++ programming."
 +  MODULARIZED 
 +  AUTHORS  "David Abrahams <dave -at- boostpro.com>"
-+           "Brad King"
++           "Brad King <brad.king -at- kitware.com>"
 +           "Douglas Gregor <doug.gregor -at- gmail.com>"
 +  #  MAINTAINERS 
 +)
-+
-+
 diff --git a/libs/utility/enable_if/test/CMakeLists.txt b/libs/utility/enable_if/test/CMakeLists.txt
 new file mode 100644
 index 0000000..be95145
@@ -11847,10 +11921,10 @@ index 0000000..b4d51fc
 Binary files /dev/null and b/tools/build/CMake/Boost.png differ
 diff --git a/tools/build/CMake/BoostConfig.cmake b/tools/build/CMake/BoostConfig.cmake
 new file mode 100644
-index 0000000..3519294
+index 0000000..d753c07
 --- /dev/null
 +++ b/tools/build/CMake/BoostConfig.cmake
-@@ -0,0 +1,249 @@
+@@ -0,0 +1,258 @@
 +##########################################################################
 +# Boost Configuration Support                                            #
 +##########################################################################
@@ -11882,6 +11956,11 @@ index 0000000..3519294
 +
 +
 +# Toolset detection.
++# Note: Known MS Visual C/C++ versions (CMake MSVC_VERSION variable),
++#       as of July 2012 (see for instance:
++#       http://cmake.org/cmake/help/v2.8.8/cmake.html#variable:MSVC):
++#       1200 = VS 6.0; 1300 = VS 7.0; 1310 = VS 7.1;
++#       1400 = VS 8.0; 1500 = VS 9.0; 1600 = VS 10.0
 +if (NOT BOOST_TOOLSET)
 +  set(BOOST_TOOLSET "unknown")
 +  if (MSVC60)
@@ -11904,6 +11983,10 @@ index 0000000..3519294
 +    set(BOOST_TOOLSET "vc90")
 +    set(BOOST_COMPILER "msvc")
 +    set(BOOST_COMPILER_VERSION "9.0")
++  elseif(MSVC10)
++    set(BOOST_TOOLSET "vc100")
++    set(BOOST_COMPILER "msvc")
++    set(BOOST_COMPILER_VERSION "10.0")
 +  elseif(MSVC)
 +    set(BOOST_TOOLSET "vc")
 +    set(BOOST_COMPILER "msvc")
@@ -38466,9 +38549,6 @@ index 0000000..594a34d
 +)
 +
 +
-diff --git a/tools/build/CMake/test/libs/c/module.cmake b/tools/build/CMake/test/libs/c/module.cmake
-new file mode 100644
-index 0000000..e69de29
 diff --git a/tools/build/CMake/test/libs/c/src/CMakeLists.txt b/tools/build/CMake/test/libs/c/src/CMakeLists.txt
 new file mode 100644
 index 0000000..cfc4752
@@ -38611,9 +38691,6 @@ index 0000000..5cff225
 +)
 +
 +
-diff --git a/tools/build/CMake/test/libs/d/module.cmake b/tools/build/CMake/test/libs/d/module.cmake
-new file mode 100644
-index 0000000..e69de29
 diff --git a/tools/build/CMake/test/libs/d/src/CMakeLists.txt b/tools/build/CMake/test/libs/d/src/CMakeLists.txt
 new file mode 100644
 index 0000000..aaba81f

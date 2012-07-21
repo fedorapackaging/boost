@@ -24,8 +24,8 @@
 
 Name: boost
 Summary: The free peer-reviewed portable C++ source libraries
-Version: 1.48.0
-%define version_enc 1_48_0
+Version: 1.50.0
+%define version_enc 1_50_0
 Release: 17%{?dist}
 License: Boost and MIT and Python
 
@@ -90,70 +90,56 @@ BuildRequires: chrpath
 # CMake-related files (CMakeLists.txt and module.cmake files).
 # That patch also contains Web-related documentation for the Trac Wiki
 # devoted to "old" Boost-CMake (up-to-date until Boost-1.41.0).
-Patch0: boost-1.48.0-cmakeify-full.patch
+Patch0: boost-1.50.0-cmakeify-full.patch
 Patch1: boost-cmake-soname.patch
 
 # The patch may break c++03, and there is therefore no plan yet to include
 # it upstream: https://svn.boost.org/trac/boost/ticket/4999
-Patch2: boost-1.48.0-signals-erase.patch
+Patch2: boost-1.50.0-signals-erase.patch
 
-# https://svn.boost.org/trac/boost/ticket/5731
-Patch3: boost-1.48.0-exceptions.patch
-
+# A ticket has been opened upstream:
 # https://svn.boost.org/trac/boost/ticket/6150
-Patch4: boost-1.48.0-fix-non-utf8-files.patch
+# However, there has been no comment/feedback/activity from upstream at all.
+# So, that patch is still valid.
+Patch3: boost-1.50.0-fix-non-utf8-files.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview.html
-Patch5: boost-1.48.0-add-bjam-man-page.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=757385
-# https://svn.boost.org/trac/boost/ticket/6182
-Patch6: boost-1.48.0-lexical_cast-incomplete.patch
+# That patch will not be integrated upstream, obviously.
+Patch4: boost-1.50.0-add-bjam-man-page.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=756005
-# https://svn.boost.org/trac/boost/ticket/6131
-Patch7: boost-1.48.0-foreach.patch
-
-# https://svn.boost.org/trac/boost/ticket/6165
-Patch8: boost-1.48.0-gcc47-pthreads.patch
+# The upstream ticket (https://svn.boost.org/trac/boost/ticket/6131)
+# has been closed with a "won't fix" conclusion. So, the work-around,
+# enabling the compilation of Wesnoth (among others), may still be useful.
+# However, (Boost) upstream recommends to get rid of the use of #define foreach,
+# in order to solve the compilation error. So, (upstream) Wesnoth should be
+# advised to do so.
+Patch5: boost-1.50.0-foreach.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=781859
-# https://svn.boost.org/trac/boost/ticket/6406 fixed
-# https://svn.boost.org/trac/boost/ticket/6407 fixed
+# The following tickets have still to be fixed by upstream.
+# https://svn.boost.org/trac/boost/ticket/6406 fixed, but only in Boost-1.51.0
 # https://svn.boost.org/trac/boost/ticket/6408
-# https://svn.boost.org/trac/boost/ticket/6409 fixed
 # https://svn.boost.org/trac/boost/ticket/6410
-# https://svn.boost.org/trac/boost/ticket/6411 fixed
-# https://svn.boost.org/trac/boost/ticket/6412 fixed
 # https://svn.boost.org/trac/boost/ticket/6413
-# https://svn.boost.org/trac/boost/ticket/6414 fixed
 # https://svn.boost.org/trac/boost/ticket/6415
-# https://svn.boost.org/trac/boost/ticket/6416 fixed
-Patch9: boost-1.48.0-attribute.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=783660
-# https://svn.boost.org/trac/boost/ticket/6459 fixed
-Patch10: boost-1.48.0-long-double-1.patch
-Patch11: boost-1.48.0-long-double.patch
+# The Fedora patch has been reduced according to the tickets already
+# closed/fixed by upstream.
+Patch6: boost-1.50.0-attribute.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=784654
-Patch12: boost-1.48.0-polygon.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=807780
-Patch13: boost-1.48.0-python3.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=824810
-# https://svn.boost.org/trac/boost/ticket/6940
-Patch14: boost-1.48.0-xtime.patch
+# Ticket created upstream (in July 2012, i.e., the fix will not land before at
+# least Boost-1.52.0): https://svn.boost.org/trac/boost/ticket/7154
+Patch7: boost-1.50.0-polygon.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=828856
 # https://bugzilla.redhat.com/show_bug.cgi?id=828857
-Patch15: boost-1.48.0-pool.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=832265
-Patch16: boost-1.48.0-locale.patch
+# The bug has been fixed upstream (https://svn.boost.org/trac/boost/ticket/6701)
+# but within the sandbox only. There is no plan yet to apply that patch
+# on the release branches (including 1.51.0 for instance).
+Patch8: boost-1.50.0-pool.patch
 
 %bcond_with tests
 %bcond_with docs_generated
@@ -531,20 +517,12 @@ sed 's/_FEDORA_SONAME/%{sonamever}/' %{PATCH1} | %{__patch} -p0 --fuzz=0
 
 # Fixes
 %patch2 -p1
-%patch3 -p0
+%patch3 -p1
 %patch4 -p1
-%patch5 -p1
+%patch5 -p2
 %patch6 -p1
-%patch7 -p2
+%patch7 -p3
 %patch8 -p0
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p3
-%patch13 -p1
-%patch14 -p1
-%patch15 -p0
-%patch16 -p1
 
 %build
 # Support for building tests.
@@ -1083,6 +1061,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/bjam.1*
 
 %changelog
+* Thu Jul 19 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> - 1.50.0-1
+- Upgrade to Boost-1.50.0, adding five new header-only components:
+  Algorithm, Functional/OverloadedFunction, LocalFunction, 
+  Utility/IdentityType and Heap
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.48.0-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
